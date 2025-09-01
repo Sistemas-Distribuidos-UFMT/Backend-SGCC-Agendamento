@@ -7,12 +7,14 @@ import br.com.ufmt.backendsgccagendamento.entities.Pessoa;
 import br.com.ufmt.backendsgccagendamento.repositories.ConsultaRepository;
 import br.com.ufmt.backendsgccagendamento.repositories.MedicoRepository;
 import br.com.ufmt.backendsgccagendamento.repositories.PessoaRepository;
+import lombok.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
 
+@Data
 @Service
 public class ConsultaService {
 
