@@ -43,7 +43,7 @@ create table medico (
 create table expediente (
     codigo_expediente uuid primary key default gen_random_uuid(),
     codigo_medico uuid references medico(codigo_medico) not null,
-    dia_da_semana smallint not null,
+    dia_semana smallint not null,
     hora_inicio time not null,
     hora_fim time not null,
     data_atualizacao timestamp,
