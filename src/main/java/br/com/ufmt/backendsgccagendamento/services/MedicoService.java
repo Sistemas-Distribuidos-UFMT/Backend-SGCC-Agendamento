@@ -9,6 +9,7 @@ import br.com.ufmt.backendsgccagendamento.repositories.MedicoRepository;
 import br.com.ufmt.backendsgccagendamento.repositories.PessoaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -30,10 +31,15 @@ public class MedicoService {
         return medicoRepository.findAll();
     }
 
+    public List<Especialidade> listarEspecialidades() {
+        return especialidadeRepository.findAll();
+    }
+
     public Medico buscarMedicoPorId(UUID id) {
         return medicoRepository.findById(id).orElse(null);
     }
 
+    @Transactional
     public Medico salvarMedico(Medico medico, UUID especialidadeId) {
         Pessoa pessoa = medico.getPessoa();
         pessoa.setTipoPessoa(TipoPessoa.MEDICO);
@@ -46,6 +52,7 @@ public class MedicoService {
         return medicoRepository.save(medico);
     }
 
+    @Transactional
     public Medico atualizarMedico(UUID id, Medico medicoAtualizado) {
         Optional<Medico> medicoExistente = medicoRepository.findById(id);
         if (medicoExistente.isPresent()) {
@@ -56,7 +63,17 @@ public class MedicoService {
         return null;
     }
 
+    @Transactional
     public void deletarMedico(UUID id) {
-        medicoRepository.deleteById(id);
+        Optional<Medico> medicoOptional = medicoRepository.findById(id);
+        if (medicoOptional.isPresent()) {
+            Medico medico = medicoOptional.get();
+            Pessoa pessoa = medico.getPessoa();
+            medicoRepository.delete(medico);
+
+            if (pessoa != null) {
+                pessoaRepository.delete(pessoa);
+            }
+        }
     }
 }

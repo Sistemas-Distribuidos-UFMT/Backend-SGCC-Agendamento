@@ -1,0 +1,6 @@
+INSERT INTO especialidade (codigo_especialidade, nome, descricao, data_criacao, data_atualizacao) VALUES
+    (gen_random_uuid(), 'Cardiologia', 'Especialidade médica que se ocupa do diagnóstico e tratamento das doenças que acometem o coração, bem como os outros componentes do sistema circulatório.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    (gen_random_uuid(), 'Dermatologia', 'Especialidade médica que se ocupa do diagnóstico e tratamento clínico-cirúrgico das doenças que acometem o maior órgão do corpo humano: a pele.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    (gen_random_uuid(), 'Ortopedia', 'Especialidade médica que cuida da saúde relacionadas aos elementos do aparelho locomotor, como ossos, músculos, ligamentos e articulações.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    (gen_random_uuid(), 'Pediatria', 'Especialidade médica dedicada à assistência à criança e ao adolescente, nos seus diversos aspectos, sejam eles preventivos ou curativos.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    (gen_random_uuid(), 'Ginecologia', 'Especialidade que trata da saúde da mulher, da infância à terceira idade. Cuida do sistema reprodutor feminino (útero, vagina e ovários).', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);

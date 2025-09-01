@@ -3,7 +3,9 @@ package br.com.ufmt.backendsgccagendamento.entities;
 import br.com.ufmt.backendsgccagendamento.entities.enums.Situacao;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -27,7 +29,7 @@ public class Consulta {
     @Column(nullable = false)
     private LocalDateTime data;
 
-    @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     private Situacao situacao;
 
     @UpdateTimestamp

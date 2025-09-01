@@ -10,11 +10,11 @@ import br.com.ufmt.backendsgccagendamento.repositories.PessoaRepository;
 import lombok.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
 
-@Data
 @Service
 public class ConsultaService {
 
@@ -35,6 +35,7 @@ public class ConsultaService {
         return consultaRepository.findById(id).orElse(null);
     }
 
+    @Transactional
     public Consulta agendarConsulta(ConsultaDTO consultaDTO) {
         if (consultaRepository.existsByMedicoAndData(consultaDTO.getMedicoId(), consultaDTO.getData())) {
             throw new RuntimeException("Horário indisponível para este médico.");
@@ -56,6 +57,7 @@ public class ConsultaService {
         return consultaRepository.save(novaConsulta);
     }
 
+    @Transactional
     public void cancelarConsulta(UUID id) {
         consultaRepository.deleteById(id);
     }

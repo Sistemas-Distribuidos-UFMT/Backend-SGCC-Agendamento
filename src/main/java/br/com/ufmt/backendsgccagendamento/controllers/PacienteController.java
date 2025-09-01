@@ -1,5 +1,6 @@
 package br.com.ufmt.backendsgccagendamento.controllers;
 
+import br.com.ufmt.backendsgccagendamento.dtos.PacienteDTO;
 import br.com.ufmt.backendsgccagendamento.entities.Pessoa;
 import br.com.ufmt.backendsgccagendamento.services.PacienteService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,13 +29,26 @@ public class PacienteController {
     }
 
     @PostMapping
-    public Pessoa criarPaciente(@RequestBody Pessoa paciente) {
-        return pacienteService.salvarPaciente(paciente);
+    public Pessoa criarPaciente(@RequestBody PacienteDTO pacienteDTO) {
+        Pessoa novaPessoa = new Pessoa();
+        novaPessoa.setNome(pacienteDTO.getNome());
+        novaPessoa.setEmail(pacienteDTO.getEmail());
+        novaPessoa.setTelefone(pacienteDTO.getTelefone());
+        // ATENÇÃO: A senha deve ser criptografada antes de ser salva.
+        // Implemente um serviço de criptografia aqui.
+        novaPessoa.setSenhaCriptografada(pacienteDTO.getSenha());
+
+        return pacienteService.salvarPaciente(novaPessoa);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Pessoa> atualizarPaciente(@PathVariable UUID id, @RequestBody Pessoa paciente) {
-        Pessoa pacienteAtualizado = pacienteService.atualizarPaciente(id, paciente);
+    public ResponseEntity<Pessoa> atualizarPaciente(@PathVariable UUID id, @RequestBody PacienteDTO pacienteDTO) {
+        Pessoa dadosAtualizados = new Pessoa();
+        dadosAtualizados.setNome(pacienteDTO.getNome());
+        dadosAtualizados.setEmail(pacienteDTO.getEmail());
+        dadosAtualizados.setTelefone(pacienteDTO.getTelefone());
+
+        Pessoa pacienteAtualizado = pacienteService.atualizarPaciente(id, dadosAtualizados);
         return pacienteAtualizado != null ? ResponseEntity.ok(pacienteAtualizado) : ResponseEntity.notFound().build();
     }
 

@@ -3,7 +3,9 @@ package br.com.ufmt.backendsgccagendamento.entities;
 import br.com.ufmt.backendsgccagendamento.entities.enums.TipoPessoa;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -28,7 +30,7 @@ public class Pessoa {
     @Column(name = "senha_criptografada", nullable = false, length = 256)
     private String senhaCriptografada;
 
-    @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     @Column(name = "tipo_pessoa", nullable = false)
     private TipoPessoa tipoPessoa;
 

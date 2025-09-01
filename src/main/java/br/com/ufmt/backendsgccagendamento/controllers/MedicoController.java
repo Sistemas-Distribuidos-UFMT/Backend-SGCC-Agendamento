@@ -1,6 +1,7 @@
 package br.com.ufmt.backendsgccagendamento.controllers;
 
 import br.com.ufmt.backendsgccagendamento.dtos.MedicoDTO;
+import br.com.ufmt.backendsgccagendamento.entities.Especialidade;
 import br.com.ufmt.backendsgccagendamento.entities.Medico;
 import br.com.ufmt.backendsgccagendamento.entities.Pessoa;
 import br.com.ufmt.backendsgccagendamento.services.MedicoService;
@@ -21,6 +22,11 @@ public class MedicoController {
     @GetMapping
     public List<Medico> listarMedicos() {
         return medicoService.listarMedicos();
+    }
+
+    @GetMapping("/especialidades")
+    public List<Especialidade> listarEspecialidades() {
+        return medicoService.listarEspecialidades();
     }
 
     @GetMapping("/{id}")
