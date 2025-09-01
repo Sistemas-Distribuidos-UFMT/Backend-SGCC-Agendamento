@@ -2,7 +2,9 @@ package br.com.ufmt.backendsgccagendamento.entities;
 
 import br.com.ufmt.backendsgccagendamento.entities.enums.TipoPessoa;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -10,8 +12,10 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-@Data
 @Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Pessoa implements Serializable {
 
     @Id

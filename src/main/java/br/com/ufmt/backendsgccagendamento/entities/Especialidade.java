@@ -1,7 +1,9 @@
 package br.com.ufmt.backendsgccagendamento.entities;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -9,9 +11,10 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-@Data
 @Entity
-@Table(name = "especialidade")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Especialidade implements Serializable {
 
     @Id
