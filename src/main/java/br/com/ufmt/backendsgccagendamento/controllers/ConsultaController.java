@@ -30,12 +30,8 @@ public class ConsultaController {
 
     @PostMapping
     public ResponseEntity<Consulta> agendarConsulta(@RequestBody ConsultaDTO consultaDTO) {
-        try {
-            Consulta novaConsulta = consultaService.agendarConsulta(consultaDTO);
-            return ResponseEntity.ok(novaConsulta);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(null);
-        }
+        Consulta novaConsulta = consultaService.agendarConsulta(consultaDTO);
+        return ResponseEntity.ok(novaConsulta);
     }
 
     @DeleteMapping("/{id}")

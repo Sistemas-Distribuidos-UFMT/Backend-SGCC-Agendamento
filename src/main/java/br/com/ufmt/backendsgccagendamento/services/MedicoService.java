@@ -4,6 +4,7 @@ import br.com.ufmt.backendsgccagendamento.entities.Especialidade;
 import br.com.ufmt.backendsgccagendamento.entities.Medico;
 import br.com.ufmt.backendsgccagendamento.entities.Pessoa;
 import br.com.ufmt.backendsgccagendamento.entities.enums.TipoPessoa;
+import br.com.ufmt.backendsgccagendamento.exceptions.EntityNotFoundException;
 import br.com.ufmt.backendsgccagendamento.repositories.EspecialidadeRepository;
 import br.com.ufmt.backendsgccagendamento.repositories.MedicoRepository;
 import br.com.ufmt.backendsgccagendamento.repositories.PessoaRepository;
@@ -36,7 +37,8 @@ public class MedicoService {
     }
 
     public Medico buscarMedicoPorId(UUID id) {
-        return medicoRepository.findById(id).orElse(null);
+        return medicoRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(Medico.class, id));
     }
 
     @Transactional
@@ -46,7 +48,7 @@ public class MedicoService {
         pessoaRepository.save(pessoa);
 
         Especialidade especialidade = especialidadeRepository.findById(especialidadeId)
-                .orElseThrow(() -> new RuntimeException("Especialidade não encontrada"));
+                .orElseThrow(() -> new EntityNotFoundException(Especialidade.class, especialidadeId));
         medico.setEspecialidade(especialidade);
 
         return medicoRepository.save(medico);
@@ -54,26 +56,22 @@ public class MedicoService {
 
     @Transactional
     public Medico atualizarMedico(UUID id, Medico medicoAtualizado) {
-        Optional<Medico> medicoExistente = medicoRepository.findById(id);
-        if (medicoExistente.isPresent()) {
-            Medico medico = medicoExistente.get();
-            medico.setCrm(medicoAtualizado.getCrm());
-            return medicoRepository.save(medico);
-        }
-        return null;
+        Medico medico = medicoRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(Medico.class, id));
+        medico.setCrm(medicoAtualizado.getCrm());
+        return medicoRepository.save(medico);
     }
 
     @Transactional
     public void deletarMedico(UUID id) {
-        Optional<Medico> medicoOptional = medicoRepository.findById(id);
-        if (medicoOptional.isPresent()) {
-            Medico medico = medicoOptional.get();
-            Pessoa pessoa = medico.getPessoa();
-            medicoRepository.delete(medico);
+        Medico medico = medicoRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(Medico.class, id));
 
-            if (pessoa != null) {
-                pessoaRepository.delete(pessoa);
-            }
+        Pessoa pessoa = medico.getPessoa();
+        medicoRepository.delete(medico);
+
+        if (pessoa != null) {
+            pessoaRepository.delete(pessoa);
         }
     }
 }

@@ -2,13 +2,13 @@ package br.com.ufmt.backendsgccagendamento.services;
 
 import br.com.ufmt.backendsgccagendamento.entities.Pessoa;
 import br.com.ufmt.backendsgccagendamento.entities.enums.TipoPessoa;
+import br.com.ufmt.backendsgccagendamento.exceptions.EntityNotFoundException;
 import br.com.ufmt.backendsgccagendamento.repositories.PessoaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -22,7 +22,8 @@ public class PacienteService {
     }
 
     public Pessoa buscarPacientePorId(UUID id) {
-        return pessoaRepository.findById(id).orElse(null);
+        return pessoaRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(Pessoa.class, id));
     }
 
     @Transactional
@@ -33,19 +34,20 @@ public class PacienteService {
 
     @Transactional
     public Pessoa atualizarPaciente(UUID id, Pessoa pacienteAtualizado) {
-        Optional<Pessoa> pacienteExistente = pessoaRepository.findById(id);
-        if (pacienteExistente.isPresent()) {
-            Pessoa paciente = pacienteExistente.get();
-            paciente.setNome(pacienteAtualizado.getNome());
-            paciente.setEmail(pacienteAtualizado.getEmail());
-            paciente.setTelefone(pacienteAtualizado.getTelefone());
-            return pessoaRepository.save(paciente);
-        }
-        return null;
+        Pessoa paciente = pessoaRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(Pessoa.class, id));
+
+        paciente.setNome(pacienteAtualizado.getNome());
+        paciente.setEmail(pacienteAtualizado.getEmail());
+        paciente.setTelefone(pacienteAtualizado.getTelefone());
+        return pessoaRepository.save(paciente);
     }
 
     @Transactional
     public void deletarPaciente(UUID id) {
+        if(!pessoaRepository.existsById(id)){
+            throw new EntityNotFoundException(Pessoa.class, id);
+        }
         pessoaRepository.deleteById(id);
     }
 }
