@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/consultas")
+@RequestMapping("/api/consultas")
 public class ConsultaController {
 
     @Autowired

@@ -36,11 +36,11 @@ public class ConsultaService {
     }
 
     public Consulta agendarConsulta(ConsultaDTO consultaDTO) {
-        if (consultaRepository.existsByMedicoCodigoAndData(consultaDTO.getMedicoId(), consultaDTO.getData())) {
+        if (consultaRepository.existsByMedicoAndData(consultaDTO.getMedicoId(), consultaDTO.getData())) {
             throw new RuntimeException("Horário indisponível para este médico.");
         }
 
-        if (consultaRepository.existsByPessoaCodigoAndData(consultaDTO.getPacienteId(), consultaDTO.getData())) {
+        if (consultaRepository.existsByPacienteAndData(consultaDTO.getPacienteId(), consultaDTO.getData())) {
             throw new RuntimeException("Paciente já possui uma consulta neste horário.");
         }
 
