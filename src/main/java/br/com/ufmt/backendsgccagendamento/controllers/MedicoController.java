@@ -1,6 +1,7 @@
 package br.com.ufmt.backendsgccagendamento.controllers;
 
 import br.com.ufmt.backendsgccagendamento.dtos.MedicoDTO;
+import br.com.ufmt.backendsgccagendamento.dtos.MedicoExpedienteDTO;
 import br.com.ufmt.backendsgccagendamento.entities.Especialidade;
 import br.com.ufmt.backendsgccagendamento.entities.Medico;
 import br.com.ufmt.backendsgccagendamento.entities.Pessoa;
@@ -20,19 +21,19 @@ public class MedicoController {
     private MedicoService medicoService;
 
     @GetMapping
-    public List<Medico> listarMedicos() {
+    public List<MedicoExpedienteDTO> listarMedicos() {
         return medicoService.listarMedicos();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<MedicoExpedienteDTO> buscarMedicoPorId(@PathVariable UUID id) {
+        MedicoExpedienteDTO medico = medicoService.buscarMedicoPorId(id);
+        return ResponseEntity.ok(medico);
     }
 
     @GetMapping("/especialidades")
     public List<Especialidade> listarEspecialidades() {
         return medicoService.listarEspecialidades();
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Medico> buscarMedicoPorId(@PathVariable UUID id) {
-        Medico medico = medicoService.buscarMedicoPorId(id);
-        return medico != null ? ResponseEntity.ok(medico) : ResponseEntity.notFound().build();
     }
 
     @PostMapping
