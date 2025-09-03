@@ -50,7 +50,7 @@ public class SecurityFilter extends OncePerRequestFilter {
             }
 
             TokenDTO tokenDTO = possivelLogin.get();
-            UserDetails user = pessoaRepository.findByCodigo_pessoa(tokenDTO.codigoLogin());
+            UserDetails user = pessoaRepository.findByCodigoPessoa(tokenDTO.codigoLogin());
 
             if(user != null) {
                 if (!user.isEnabled()){
