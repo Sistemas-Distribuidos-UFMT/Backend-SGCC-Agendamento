@@ -6,12 +6,17 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.type.SqlTypes;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.UUID;
 
 @Entity
-public class Pessoa {
+public class Pessoa implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -41,6 +46,44 @@ public class Pessoa {
     @CreationTimestamp
     @Column(name = "data_criacao", updatable = false)
     private LocalDateTime dataCriacao;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        ArrayList<SimpleGrantedAuthority> authorities = new ArrayList<>(3);
+        switch (this.tipoPessoa) {
+            case GESTOR    : authorities.add(new SimpleGrantedAuthority("ROLE_GESTOR"));
+            case ATENDENTE : authorities.add(new SimpleGrantedAuthority("ROLE_ATENDENTE"));
+            case MEDICO  : authorities.add(new SimpleGrantedAuthority("ROLE_MEDICO"));
+            case CLIENTE  : authorities.add(new SimpleGrantedAuthority("ROLE_CLIENTE"));
+        }
+        return authorities;
+    }
+
+    @Override
+    public String getPassword() { return senhaCriptografada; }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled()  { return true; }
 
     public Pessoa(UUID codigo_pessoa, String nome, String email, String telefone, String senhaCriptografada, TipoPessoa tipoPessoa, LocalDateTime dataAtualizacao, LocalDateTime dataCriacao) {
         this.codigo_pessoa = codigo_pessoa;
