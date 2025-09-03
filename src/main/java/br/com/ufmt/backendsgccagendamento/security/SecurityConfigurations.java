@@ -32,11 +32,9 @@ import java.net.URI;
 public class SecurityConfigurations {
     @Autowired
     SecurityFilter securityFilter;
-    private final CustomLogoutSuccessHandler customLogoutSuccessHandler;
 
-    public SecurityConfigurations(CustomLogoutSuccessHandler customLogoutSuccessHandler) {
-        this.customLogoutSuccessHandler = customLogoutSuccessHandler;
-    }
+    @Autowired
+    private CustomLogoutSuccessHandler customLogoutSuccessHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -45,25 +43,30 @@ public class SecurityConfigurations {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .logout(logout -> logout
                         .logoutUrl("/api/auth/logout")
-                        .deleteCookies("auth_token")
                         .invalidateHttpSession(true)
                         .logoutSuccessHandler(customLogoutSuccessHandler))
                 .authorizeHttpRequests(authorize -> authorize
+                        // Rotas públicas
                         .requestMatchers("/v3/api-docs/**", "/api/swagger-ui/**", "/api/docs").permitAll()
-
                         .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/auth/logout").authenticated()
-
-                        .requestMatchers(HttpMethod.GET, "/api/pacientes/**").hasRole("ATENDENTE")
                         .requestMatchers(HttpMethod.POST, "/api/pacientes").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/api/pacientes/**").hasAnyRole("ATENDENTE", "CLIENTE")
-                        .requestMatchers(HttpMethod.DELETE, "/api/pacientes/**").hasRole("GESTOR")
 
+                        // Rotas do Paciente Logado (/me)
+                        .requestMatchers(HttpMethod.GET, "/api/pacientes/me", "/api/pacientes/me/consultas").hasRole("CLIENTE")
+                        .requestMatchers(HttpMethod.PUT, "/api/pacientes/me").hasRole("CLIENTE")
+
+                        // Rotas de Pacientes (gerenciamento)
+                        .requestMatchers(HttpMethod.GET, "/api/pacientes", "/api/pacientes/{id}").hasRole("ATENDENTE")
+                        .requestMatchers(HttpMethod.PUT, "/api/pacientes/{id}").hasRole("ATENDENTE")
+                        .requestMatchers(HttpMethod.DELETE, "/api/pacientes/{id}").hasRole("GESTOR")
+
+                        // Rotas de Médicos
                         .requestMatchers(HttpMethod.GET, "/api/medicos/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/medicos").hasRole("GESTOR")
                         .requestMatchers(HttpMethod.PUT, "/api/medicos/**").hasRole("GESTOR")
                         .requestMatchers(HttpMethod.DELETE, "/api/medicos/**").hasRole("GESTOR")
 
+                        // Rotas de Consultas
                         .requestMatchers(HttpMethod.GET, "/api/consultas/**").hasAnyRole("ATENDENTE", "MEDICO")
                         .requestMatchers(HttpMethod.POST, "/api/consultas").hasAnyRole("ATENDENTE", "CLIENTE")
                         .requestMatchers(HttpMethod.DELETE, "/api/consultas/**").hasAnyRole("ATENDENTE", "CLIENTE")
@@ -87,16 +90,12 @@ public class SecurityConfigurations {
 
     public AccessDeniedHandler accessDeniedHandler(){
         return (request, response, accessDeniedException) -> {
-
             ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatus.FORBIDDEN);
             problemDetail.setInstance(URI.create(request.getRequestURI()));
             problemDetail.setTitle("Acesso negado.");
-            problemDetail.setDetail("Contate os administradores.");
-            //problemDetail.setType(URI.create("url sobre o problema"));
-
+            problemDetail.setDetail("Você não tem permissão para acessar este recurso.");
             response.setStatus(problemDetail.getStatus());
             response.setContentType("application/json");
-
             writeResponseBody(response, problemDetail);
         };
     }
@@ -111,5 +110,4 @@ public class SecurityConfigurations {
     public Customizer<ExceptionHandlingConfigurer<HttpSecurity>> exceptionHandlingConfigurer() {
         return configurer -> configurer.accessDeniedHandler(accessDeniedHandler());
     }
-
 }

@@ -1,7 +1,10 @@
 package br.com.ufmt.backendsgccagendamento.controllers;
 
 import br.com.ufmt.backendsgccagendamento.dtos.PacienteDTO;
+import br.com.ufmt.backendsgccagendamento.entities.Consulta;
 import br.com.ufmt.backendsgccagendamento.entities.Pessoa;
+import br.com.ufmt.backendsgccagendamento.services.AuthorizationService;
+import br.com.ufmt.backendsgccagendamento.services.ConsultaService;
 import br.com.ufmt.backendsgccagendamento.services.PacienteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +19,36 @@ public class PacienteController {
 
     @Autowired
     private PacienteService pacienteService;
+    @Autowired
+    private AuthorizationService authorizationService;
+    @Autowired
+    private ConsultaService consultaService;
+
+    @GetMapping("/me")
+    public ResponseEntity<Pessoa> buscarPacienteLogado() {
+        Pessoa pacienteLogado = authorizationService.getUsuarioAutenticado();
+        return ResponseEntity.ok(pacienteLogado);
+    }
+
+    @PutMapping("/me")
+    public ResponseEntity<Pessoa> atualizarPacienteLogado(@RequestBody PacienteDTO pacienteDTO) {
+        Pessoa pacienteLogado = authorizationService.getUsuarioAutenticado();
+
+        Pessoa dadosAtualizados = new Pessoa();
+        dadosAtualizados.setNome(pacienteDTO.getNome());
+        dadosAtualizados.setEmail(pacienteDTO.getEmail());
+        dadosAtualizados.setTelefone(pacienteDTO.getTelefone());
+
+        Pessoa pacienteAtualizado = pacienteService.atualizarPacienteLogado(pacienteLogado, dadosAtualizados);
+        return ResponseEntity.ok(pacienteAtualizado);
+    }
+
+    @GetMapping("/me/consultas")
+    public ResponseEntity<List<Consulta>> listarConsultasDoPacienteLogado() {
+        Pessoa pacienteLogado = authorizationService.getUsuarioAutenticado();
+        List<Consulta> consultas = consultaService.listarConsultasPorPaciente(pacienteLogado.getCodigo_pessoa());
+        return ResponseEntity.ok(consultas);
+    }
 
     @GetMapping
     public List<Pessoa> listarPacientes() {
@@ -25,7 +58,7 @@ public class PacienteController {
     @GetMapping("/{id}")
     public ResponseEntity<Pessoa> buscarPacientePorId(@PathVariable UUID id) {
         Pessoa paciente = pacienteService.buscarPacientePorId(id);
-        return paciente != null ? ResponseEntity.ok(paciente) : ResponseEntity.notFound().build();
+        return ResponseEntity.ok(paciente);
     }
 
     @PostMapping
@@ -47,7 +80,7 @@ public class PacienteController {
         dadosAtualizados.setTelefone(pacienteDTO.getTelefone());
 
         Pessoa pacienteAtualizado = pacienteService.atualizarPaciente(id, dadosAtualizados);
-        return pacienteAtualizado != null ? ResponseEntity.ok(pacienteAtualizado) : ResponseEntity.notFound().build();
+        return ResponseEntity.ok(pacienteAtualizado);
     }
 
     @DeleteMapping("/{id}")

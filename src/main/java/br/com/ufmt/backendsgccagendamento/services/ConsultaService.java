@@ -32,6 +32,10 @@ public class ConsultaService {
         return consultaRepository.findAll();
     }
 
+    public List<Consulta> listarConsultasPorPaciente(UUID pacienteId) {
+        return consultaRepository.findByPacienteId(pacienteId);
+    }
+
     public Consulta buscarConsultaPorId(UUID id) {
         return consultaRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(Consulta.class, id));

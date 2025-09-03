@@ -36,6 +36,14 @@ public class PacienteService {
     }
 
     @Transactional
+    public Pessoa atualizarPacienteLogado(Pessoa pacienteLogado, Pessoa dadosAtualizados) {
+        pacienteLogado.setNome(dadosAtualizados.getNome());
+        pacienteLogado.setEmail(dadosAtualizados.getEmail());
+        pacienteLogado.setTelefone(dadosAtualizados.getTelefone());
+        return pessoaRepository.save(pacienteLogado);
+    }
+
+    @Transactional
     public Pessoa atualizarPaciente(UUID id, Pessoa pacienteAtualizado) {
         Pessoa paciente = pessoaRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(Pessoa.class, id));
