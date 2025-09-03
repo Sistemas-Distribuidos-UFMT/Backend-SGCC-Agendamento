@@ -44,15 +44,15 @@ public class SecurityConfigurations {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .logout(logout -> logout
-                        .logoutUrl("/api/v1/auth/logout")
+                        .logoutUrl("/api/auth/logout")
                         .deleteCookies("auth_token")
                         .invalidateHttpSession(true)
                         .logoutSuccessHandler(customLogoutSuccessHandler))
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/v3/api-docs/**", "/api/swagger-ui/**", "/api/docs").permitAll()
 
-                        // .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
-                        // .requestMatchers(HttpMethod.POST, "/api/auth/logout").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/auth/logout").authenticated()
 
                         .requestMatchers(HttpMethod.GET, "/api/pacientes/**").hasRole("ATENDENTE")
                         .requestMatchers(HttpMethod.POST, "/api/pacientes").permitAll()
@@ -64,7 +64,7 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.PUT, "/api/medicos/**").hasRole("GESTOR")
                         .requestMatchers(HttpMethod.DELETE, "/api/medicos/**").hasRole("GESTOR")
 
-                        .requestMatchers(HttpMethod.GET, "/api/consultas/**").hasAnyRole("ATENDENTE", "MEDICO")
+                        .requestMatchers(HttpMethod.GET, "/api/consultas/**").authenticated()
                         .requestMatchers(HttpMethod.POST, "/api/consultas").hasAnyRole("ATENDENTE", "CLIENTE")
                         .requestMatchers(HttpMethod.DELETE, "/api/consultas/**").hasAnyRole("ATENDENTE", "CLIENTE")
 

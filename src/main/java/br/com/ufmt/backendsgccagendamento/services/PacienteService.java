@@ -5,6 +5,7 @@ import br.com.ufmt.backendsgccagendamento.entities.enums.TipoPessoa;
 import br.com.ufmt.backendsgccagendamento.exceptions.EntityNotFoundException;
 import br.com.ufmt.backendsgccagendamento.repositories.PessoaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +30,8 @@ public class PacienteService {
     @Transactional
     public Pessoa salvarPaciente(Pessoa paciente) {
         paciente.setTipoPessoa(TipoPessoa.CLIENTE);
+        String senhaCriptografada = new BCryptPasswordEncoder().encode(paciente.getSenhaCriptografada());
+        paciente.setSenhaCriptografada(senhaCriptografada);
         return pessoaRepository.save(paciente);
     }
 

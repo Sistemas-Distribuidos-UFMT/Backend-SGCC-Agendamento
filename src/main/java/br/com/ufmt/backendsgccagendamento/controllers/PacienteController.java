@@ -34,8 +34,6 @@ public class PacienteController {
         novaPessoa.setNome(pacienteDTO.getNome());
         novaPessoa.setEmail(pacienteDTO.getEmail());
         novaPessoa.setTelefone(pacienteDTO.getTelefone());
-        // ATENÇÃO: A senha deve ser criptografada antes de ser salva.
-        // Implemente um serviço de criptografia aqui.
         novaPessoa.setSenhaCriptografada(pacienteDTO.getSenha());
 
         return pacienteService.salvarPaciente(novaPessoa);
