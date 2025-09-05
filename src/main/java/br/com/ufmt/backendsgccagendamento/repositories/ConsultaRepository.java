@@ -24,4 +24,6 @@ public interface ConsultaRepository extends JpaRepository<Consulta, UUID> {
 
     @Query("SELECT CASE WHEN COUNT(c) > 0 THEN TRUE ELSE FALSE END FROM Consulta c WHERE c.pessoa.codigo_pessoa = :pacienteId AND c.data = :data")
     boolean existsByPacienteAndData(@Param("pacienteId") UUID pacienteId, @Param("data") LocalDateTime data);
+
+    List<Consulta> findAllByDataBetween(LocalDateTime inicio, LocalDateTime fim);
 }

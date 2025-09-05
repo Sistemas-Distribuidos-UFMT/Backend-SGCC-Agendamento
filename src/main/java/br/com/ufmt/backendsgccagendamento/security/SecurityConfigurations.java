@@ -50,6 +50,7 @@ public class SecurityConfigurations {
                         .requestMatchers("/v3/api-docs/**", "/api/swagger-ui/**", "/api/docs").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/pacientes").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/consultas/horarios-disponiveis").permitAll()
 
                         // Rotas do Paciente Logado (/me)
                         .requestMatchers(HttpMethod.GET, "/api/pacientes/me", "/api/pacientes/me/consultas").hasRole("CLIENTE")
@@ -70,6 +71,7 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.GET, "/api/consultas/**").hasAnyRole("ATENDENTE", "MEDICO")
                         .requestMatchers(HttpMethod.POST, "/api/consultas").hasAnyRole("ATENDENTE", "CLIENTE")
                         .requestMatchers(HttpMethod.DELETE, "/api/consultas/**").hasAnyRole("ATENDENTE", "CLIENTE")
+                        .requestMatchers(HttpMethod.PUT, "/api/consultas/**").hasAnyRole("ATENDENTE", "CLIENTE")
 
                         .anyRequest().authenticated()
                 )
