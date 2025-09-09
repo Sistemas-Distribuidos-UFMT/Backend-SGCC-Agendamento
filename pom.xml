@@ -9,8 +9,8 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>br.com.ufmt</groupId>
-    <artifactId>Backend-SGCC-Agendamento</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <artifactId>sgcc-agendamento</artifactId>
+    <version>1.00</version>
     <name>Backend-SGCC-Agendamento</name>
     <description>Backend-SGCC-Agendamento</description>
     <url/>
