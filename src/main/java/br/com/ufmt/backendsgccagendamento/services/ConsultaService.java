@@ -1,6 +1,7 @@
 package br.com.ufmt.backendsgccagendamento.services;
 
 import br.com.ufmt.backendsgccagendamento.dtos.ConsultaDTO;
+import br.com.ufmt.backendsgccagendamento.dtos.ConsultaStatusDTO;
 import br.com.ufmt.backendsgccagendamento.dtos.HorarioDisponivelDTO;
 import br.com.ufmt.backendsgccagendamento.entities.Expediente;
 import br.com.ufmt.backendsgccagendamento.producers.ConsultaProducer;
@@ -108,7 +109,7 @@ public class ConsultaService {
         Consulta consultaSalva = consultaRepository.save(novaConsulta);
 
 
-        /*DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy 'às' HH:mm");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy 'às' HH:mm");
         ConsultaStatusDTO statusDTO = new ConsultaStatusDTO(
                 paciente.getEmail(),
                 consultaSalva.getSituacao().name(),
@@ -116,7 +117,7 @@ public class ConsultaService {
                 medico.getPessoa().getNome(),
                 consultaSalva.getData().format(formatter)
         );
-        consultaProducer.publishMessage(statusDTO);*/
+        consultaProducer.publishMessage(statusDTO);
 
         return consultaSalva;
     }
@@ -129,7 +130,7 @@ public class ConsultaService {
         consulta.setSituacao(Situacao.CANCELADA);
         Consulta consultaCancelada = consultaRepository.save(consulta);
 
-        /*DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy 'às' HH:mm");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy 'às' HH:mm");
         ConsultaStatusDTO statusDTO = new ConsultaStatusDTO(
                 consultaCancelada.getPessoa().getEmail(),
                 consultaCancelada.getSituacao().name(),
@@ -137,7 +138,7 @@ public class ConsultaService {
                 consultaCancelada.getMedico().getPessoa().getNome(),
                 consultaCancelada.getData().format(formatter)
         );
-        consultaProducer.publishMessage(statusDTO);*/
+        consultaProducer.publishMessage(statusDTO);
         return consultaCancelada;
     }
 
