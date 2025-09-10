@@ -10,6 +10,7 @@ RUN mvn clean package -DskipTests
 FROM openjdk:21-jdk-slim
 
 WORKDIR /app
+ENV TZ=America/Cuiaba
 COPY --from=build /app/target/sgcc-agendamento-1.00.jar app.jar
 
 EXPOSE 8080
