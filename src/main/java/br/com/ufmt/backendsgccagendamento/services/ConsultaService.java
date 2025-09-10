@@ -15,6 +15,8 @@ import br.com.ufmt.backendsgccagendamento.repositories.ConsultaRepository;
 import br.com.ufmt.backendsgccagendamento.repositories.ExpedienteRepository;
 import br.com.ufmt.backendsgccagendamento.repositories.MedicoRepository;
 import br.com.ufmt.backendsgccagendamento.repositories.PessoaRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +34,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class ConsultaService {
+
+    private static final Logger log = LoggerFactory.getLogger(ConsultaService.class);
 
     @Autowired
     private ConsultaRepository consultaRepository;
@@ -117,7 +121,12 @@ public class ConsultaService {
                 medico.getPessoa().getNome(),
                 consultaSalva.getData().format(formatter)
         );
-        consultaProducer.publishMessage(statusDTO);
+        try {
+            consultaProducer.publishMessage(statusDTO);
+            log.info("Mensagem de agendamento de consulta enviada com sucesso para a fila. Paciente: {}", paciente.getEmail());
+        } catch (Exception e) {
+            log.error("Erro ao enviar mensagem de agendamento de consulta para a fila. Paciente: {}. Erro: {}", paciente.getEmail(), e.getMessage());
+        }
 
         return consultaSalva;
     }
@@ -138,7 +147,12 @@ public class ConsultaService {
                 consultaCancelada.getMedico().getPessoa().getNome(),
                 consultaCancelada.getData().format(formatter)
         );
-        consultaProducer.publishMessage(statusDTO);
+        try {
+            consultaProducer.publishMessage(statusDTO);
+            log.info("Mensagem de cancelamento de consulta enviada com sucesso para a fila. Paciente: {}", consultaCancelada.getPessoa().getEmail());
+        } catch (Exception e) {
+            log.error("Erro ao enviar mensagem de cancelamento de consulta para a fila. Paciente: {}. Erro: {}", consultaCancelada.getPessoa().getEmail(), e.getMessage());
+        }
         return consultaCancelada;
     }
 
