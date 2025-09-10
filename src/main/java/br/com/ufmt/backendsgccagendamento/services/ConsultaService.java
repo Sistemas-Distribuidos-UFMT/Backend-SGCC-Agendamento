@@ -162,11 +162,9 @@ public class ConsultaService {
 
         List<Expediente> expedientesDoDia = expedienteRepository.findAllByDiaSemana(diaDaSemanaNumerico);
 
-
         LocalDateTime inicioDoDia = data.atStartOfDay();
         LocalDateTime fimDoDia = data.atTime(LocalTime.MAX);
         List<Consulta> consultasAgendadas = consultaRepository.findAllByDataBetween(inicioDoDia, fimDoDia);
-
 
         Map<UUID, List<LocalTime>> horariosOcupadosPorMedico = consultasAgendadas.stream()
                 .collect(Collectors.groupingBy(
@@ -174,23 +172,28 @@ public class ConsultaService {
                         Collectors.mapping(consulta -> consulta.getData().toLocalTime(), Collectors.toList())
                 ));
 
+        LocalDateTime agoraComMargem = LocalDateTime.now().plusMinutes(30);
 
         List<HorarioDisponivelDTO> horariosDisponiveis = new ArrayList<>();
         for (Expediente expediente : expedientesDoDia) {
             LocalTime horaAtual = expediente.getHoraInicio();
             while (horaAtual.isBefore(expediente.getHoraFim())) {
 
-                List<LocalTime> horariosOcupados = horariosOcupadosPorMedico.get(expediente.getMedico().getCodigo_medico());
+                LocalDateTime horarioPotencial = data.atTime(horaAtual);
 
-                if (horariosOcupados == null || !horariosOcupados.contains(horaAtual)) {
-                    horariosDisponiveis.add(new HorarioDisponivelDTO(
-                            expediente.getMedico().getCodigo_medico(),
-                            expediente.getMedico().getPessoa().getNome(),
-                            expediente.getMedico().getEspecialidade().getNome(),
-                            horaAtual
-                    ));
+                if (!horarioPotencial.isBefore(agoraComMargem)) {
+
+                    List<LocalTime> horariosOcupados = horariosOcupadosPorMedico.get(expediente.getMedico().getCodigo_medico());
+
+                    if (horariosOcupados == null || !horariosOcupados.contains(horaAtual)) {
+                        horariosDisponiveis.add(new HorarioDisponivelDTO(
+                                expediente.getMedico().getCodigo_medico(),
+                                expediente.getMedico().getPessoa().getNome(),
+                                expediente.getMedico().getEspecialidade().getNome(),
+                                horaAtual
+                        ));
+                    }
                 }
-
 
                 horaAtual = horaAtual.plusHours(1);
             }
